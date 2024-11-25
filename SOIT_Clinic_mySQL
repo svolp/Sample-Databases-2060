@@ -1,0 +1,61 @@
+-- Step 1: Create Database
+CREATE DATABASE IF NOT EXISTS SampleDB;
+USE SampleDB;
+
+-- Step 2: Create Tables
+
+-- Table 1: Customers
+CREATE TABLE IF NOT EXISTS Customers (
+    customer_id INT AUTO_INCREMENT PRIMARY KEY,
+    first_name VARCHAR(50),
+    last_name VARCHAR(50),
+    email VARCHAR(100)
+);
+
+-- Table 2: Orders
+CREATE TABLE IF NOT EXISTS Orders (
+    order_id INT AUTO_INCREMENT PRIMARY KEY,
+    customer_id INT,
+    order_date DATE,
+    total_amount DECIMAL(10, 2),
+    FOREIGN KEY (customer_id) REFERENCES Customers(customer_id)
+);
+
+-- Table 3: Products
+CREATE TABLE IF NOT EXISTS Products (
+    product_id INT AUTO_INCREMENT PRIMARY KEY,
+    product_name VARCHAR(100),
+    price DECIMAL(10, 2),
+    stock_quantity INT
+);
+
+-- Step 3: Insert Data
+
+-- Insert data into Customers table
+INSERT INTO Customers (first_name, last_name, email) VALUES
+('John', 'Doe', 'john.doe@example.com'),
+('Jane', 'Smith', 'jane.smith@example.com'),
+('Alice', 'Johnson', 'alice.j@example.com'),
+('Bob', 'Brown', 'bob.brown@example.com'),
+('Eve', 'Davis', 'eve.davis@example.com');
+
+-- Insert data into Orders table
+INSERT INTO Orders (customer_id, order_date, total_amount) VALUES
+(1, '2024-01-01', 100.00),
+(2, '2024-01-02', 150.00),
+(3, '2024-01-03', 200.00),
+(4, '2024-01-04', 250.00),
+(5, '2024-01-05', 300.00);
+
+-- Insert data into Products table
+INSERT INTO Products (product_name, price, stock_quantity) VALUES
+('Laptop', 1000.00, 10),
+('Smartphone', 500.00, 20),
+('Tablet', 300.00, 30),
+('Headphones', 50.00, 40),
+('Charger', 20.00, 50);
+
+-- Verify data
+SELECT * FROM Customers;
+SELECT * FROM Orders;
+SELECT * FROM Products;

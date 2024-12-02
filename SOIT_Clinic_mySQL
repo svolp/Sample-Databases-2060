@@ -1,61 +1,100 @@
--- Step 1: Create Database
-CREATE DATABASE IF NOT EXISTS SampleDB;
-USE SampleDB;
 
--- Step 2: Create Tables
+-- Create database
+CREATE DATABASE SoITClinic;
+USE SoITClinic;
 
--- Table 1: Customers
-CREATE TABLE IF NOT EXISTS Customers (
-    customer_id INT AUTO_INCREMENT PRIMARY KEY,
-    first_name VARCHAR(50),
-    last_name VARCHAR(50),
-    email VARCHAR(100)
+-- Create Admissions table
+CREATE TABLE Admissions (
+    AdmitNo INT AUTO_INCREMENT NOT NULL,
+    PatId INT NOT NULL,
+    Diag_code INT NOT NULL,
+    Admit_Doct INT NOT NULL,
+    Admission_Date DATE NOT NULL,
+    Discharge_Date DATE NOT NULL,
+    PRIMARY KEY (AdmitNo)
 );
 
--- Table 2: Orders
-CREATE TABLE IF NOT EXISTS Orders (
-    order_id INT AUTO_INCREMENT PRIMARY KEY,
-    customer_id INT,
-    order_date DATE,
-    total_amount DECIMAL(10, 2),
-    FOREIGN KEY (customer_id) REFERENCES Customers(customer_id)
+-- Create Diagnostics table
+CREATE TABLE Diagnostics (
+    DiagNo INT NOT NULL,
+    Description VARCHAR(40) NOT NULL,
+    Cost DECIMAL(10, 2),
+    PRIMARY KEY (DiagNo),
+    CHECK (Cost > 0)
 );
 
--- Table 3: Products
-CREATE TABLE IF NOT EXISTS Products (
-    product_id INT AUTO_INCREMENT PRIMARY KEY,
-    product_name VARCHAR(100),
-    price DECIMAL(10, 2),
-    stock_quantity INT
+-- Create Doctors table
+CREATE TABLE Doctors (
+    Doctor_Id INT NOT NULL,
+    first_Name VARCHAR(30) NOT NULL,
+    last_Name VARCHAR(30) NOT NULL,
+    speciality VARCHAR(40) NOT NULL,
+    PRIMARY KEY (Doctor_Id)
 );
 
--- Step 3: Insert Data
+-- Create Patients table
+CREATE TABLE Patients (
+    PatId INT AUTO_INCREMENT NOT NULL,
+    first_Name VARCHAR(30) NOT NULL,
+    last_Name VARCHAR(30) NOT NULL,
+    DOB DATE NOT NULL,
+    Address VARCHAR(50) NOT NULL,
+    City VARCHAR(25) NOT NULL,
+    State CHAR(2) NOT NULL,
+    Zip CHAR(5) NOT NULL,
+    Phone VARCHAR(24) NOT NULL,
+    PRIMARY KEY (PatId),
+    CHECK (State REGEXP '^[A-Z]{2}$'),
+    CHECK (Zip REGEXP '^[0-9]{5}$')
+);
 
--- Insert data into Customers table
-INSERT INTO Customers (first_name, last_name, email) VALUES
-('John', 'Doe', 'john.doe@example.com'),
-('Jane', 'Smith', 'jane.smith@example.com'),
-('Alice', 'Johnson', 'alice.j@example.com'),
-('Bob', 'Brown', 'bob.brown@example.com'),
-('Eve', 'Davis', 'eve.davis@example.com');
+-- Insert sample data for Admissions
+INSERT INTO Admissions (PatId, Diag_code, Admit_Doct, Admission_Date, Discharge_Date)
+VALUES
+    (1, 21, 2100, '2019-08-10', '2019-09-11'),
+    (2, 30, 2142, '2019-07-01', '2019-09-15'),
+    (4, 40, 2150, '2019-05-05', '2019-09-20'),
+    (3, 15, 2164, '2019-01-10', '2019-09-28'),
+    (5, 21, 2100, '2018-06-18', '2018-09-12'),
+    (7, 30, 2142, '2018-11-01', '2018-11-15'),
+    (8, 40, 2150, '2018-04-20', '2018-06-20'),
+    (6, 15, 2164, '2017-01-13', '2017-04-28');
 
--- Insert data into Orders table
-INSERT INTO Orders (customer_id, order_date, total_amount) VALUES
-(1, '2024-01-01', 100.00),
-(2, '2024-01-02', 150.00),
-(3, '2024-01-03', 200.00),
-(4, '2024-01-04', 250.00),
-(5, '2024-01-05', 300.00);
+-- Insert sample data for Diagnostics
+INSERT INTO Diagnostics (DiagNo, Description, Cost)
+VALUES
+    (15, 'Hypertension', 400.00),
+    (21, 'Tuberculosis', 300.00),
+    (30, 'Obesity', 100.00),
+    (40, 'Anxiety', 200.00);
 
--- Insert data into Products table
-INSERT INTO Products (product_name, price, stock_quantity) VALUES
-('Laptop', 1000.00, 10),
-('Smartphone', 500.00, 20),
-('Tablet', 300.00, 30),
-('Headphones', 50.00, 40),
-('Charger', 20.00, 50);
+-- Insert sample data for Doctors
+INSERT INTO Doctors (Doctor_Id, first_Name, last_Name, speciality)
+VALUES
+    (2100, 'Michael', 'Lewis', 'Neurologist'),
+    (2142, 'Kelly', 'Lawson', 'Psychiatrist'),
+    (2150, 'Jason', 'Somers', 'Pediatrics'),
+    (2164, 'Terry', 'White', 'Neurologist');
 
--- Verify data
-SELECT * FROM Customers;
-SELECT * FROM Orders;
-SELECT * FROM Products;
+-- Insert sample data for Patients
+INSERT INTO Patients (first_Name, last_Name, DOB, Address, City, State, Zip, Phone)
+VALUES
+    ('Robert', 'Lee', '2002-02-04', '4280 Vine St', 'Cincinnati', 'OH', '45242', '(513) 525-3566'),
+    ('Amy', 'Belle', '2000-06-01', '3180 Lauren Dr', 'Cincinnati', 'OH', '45216', '(513) 216-8850'),
+    ('David', 'Shaw', '1965-04-01', '86 Reading Rd', 'Cincinnati', 'OH', '45236', '(513) 344-7980'),
+    ('Lauren', 'West', '1956-03-02', '126 Clifton Ave', 'Cincinnati', 'OH', '45220', '(513) 454-3644'),
+    ('Angie', 'Wilson', '2001-01-03', '34 Vine St', 'Cincinnati', 'OH', '45242', '(513) 525-8888'),
+    ('Shawn', 'Miller', '1998-04-02', '48 MLK Dr', 'Cincinnati', 'OH', '45216', '(513) 323-8150'),
+    ('Anna', 'Grave', '1975-02-11', '323 Angle Dr', 'Cincinnati', 'OH', '45237', '(513) 888-7090'),
+    ('Thomas', 'Bell', '2002-11-01', '42 Calhoun St', 'Cincinnati', 'OH', '45220', '(513) 545-3600');
+
+-- Create foreign keys in Admissions table
+ALTER TABLE Admissions
+ADD FOREIGN KEY (Admit_Doct) REFERENCES Doctors(Doctor_Id),
+    FOREIGN KEY (Diag_code) REFERENCES Diagnostics(DiagNo),
+    FOREIGN KEY (PatId) REFERENCES Patients(PatId);
+
+-- Create indexes
+CREATE INDEX idx_Admit_Doct ON Admissions (Admit_Doct);
+CREATE INDEX idx_Diag_code ON Admissions (Diag_code);
+CREATE INDEX idx_PatId ON Admissions (PatId);

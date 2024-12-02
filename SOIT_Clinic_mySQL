@@ -91,8 +91,8 @@ VALUES
 -- Create foreign keys in Admissions table
 ALTER TABLE Admissions
 ADD FOREIGN KEY (Admit_Doct) REFERENCES Doctors(Doctor_Id),
-    FOREIGN KEY (Diag_code) REFERENCES Diagnostics(DiagNo),
-    FOREIGN KEY (PatId) REFERENCES Patients(PatId);
+ADD FOREIGN KEY (Diag_code) REFERENCES Diagnostics(DiagNo),
+ADD FOREIGN KEY (PatId) REFERENCES Patients(PatId);
 
 -- Create indexes
 CREATE INDEX idx_Admit_Doct ON Admissions (Admit_Doct);
